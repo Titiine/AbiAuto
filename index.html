@@ -235,6 +235,15 @@ a { color: inherit; text-decoration: none; }
 .specs > div { background: var(--surface-alt); border-radius: 10px; padding: .8rem; }
 .specs dt { font-size: .75rem; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); font-weight: 700; }
 .specs dd { font-size: 1.05rem; font-weight: 700; margin-top: .2rem; }
+.modal-histo { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; border-radius: 10px; padding: .7rem 1rem; font-size: .9rem; font-weight: 600; margin: 0 0 1.2rem; }
+.modal-equip { margin: 1.4rem 0; }
+.modal-equip > h3 { font-size: 1.15rem; font-weight: 800; margin-bottom: 1rem; }
+.equip-groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; }
+.equip-group h4 { font-size: .82rem; text-transform: uppercase; letter-spacing: .5px; color: var(--primary); font-weight: 800; margin-bottom: .5rem; }
+.equip-group ul { list-style: none; display: flex; flex-direction: column; gap: .3rem; }
+.equip-group li { position: relative; padding-left: 1.3rem; font-size: .9rem; color: var(--text); }
+.equip-group li::before { content: "✓"; position: absolute; left: 0; color: var(--primary); font-weight: 800; }
+@media (max-width: 620px) { .equip-groups { grid-template-columns: 1fr; } }
 
 /* ---------- Hero réduit (pages internes) ---------- */
 .hero-small { padding: 3.5rem 0 3rem; }
@@ -661,7 +670,7 @@ a { color: inherit; text-decoration: none; }
       </div>
       <p class="footer-copy">© <span id="year"></span> AbiAuto. Tous droits réservés.</p>
     </div>
-    <p class="footer-version">AbiAuto v1.0.2 (mise à jour du 14/07/2026 à 17h35)</p>
+    <p class="footer-version">AbiAuto v1.0.3 (mise à jour du 14/07/2026 à 17h41)</p>
   </footer>
 
   <!-- ============ MODALE FICHE VÉHICULE ============ -->
@@ -709,8 +718,34 @@ const CARS = [
   {
     id: 2, marque: "Renault", modele: "Captur 2 Intens", annee: 2019,
     prix: 18490, km: 18000, carburant: "Diesel", boite: "Automatique",
-    puissance: "115 ch", places: 5, couleur: "#e67e22",
-    desc: "SUV urbain spacieux et confortable, boîte automatique EDC et moteur diesel sobre sur route. Finition Intens bien équipée, faible kilométrage, entretenu et prêt à rouler.",
+    puissance: "115 ch", places: 5, portes: 5, couleur: "#1c1c1c",
+    finition: "Intens (1.5 Blue dCi 115 EDC)", sellerie: "Tout cuir",
+    mec: "12/2019", etat: "Excellent état, proche du neuf",
+    historique: ["Non fumeur", "Factures disponibles", "Contrôle technique valide"],
+    desc: "SUV urbain spacieux et confortable, boîte automatique EDC et moteur diesel sobre sur route. Finition Intens haut de gamme, sellerie tout cuir, très faible kilométrage : un véhicule proche du neuf, entretenu et prêt à rouler.",
+    equipements: {
+      "Confort": [
+        "Sellerie tout cuir", "Climatisation automatique bi-zone",
+        "Accès et démarrage sans clé (carte mains libres)", "Recharge smartphone sans fil",
+        "Cockpit numérique", "Éclairage d'ambiance", "Volant cuir multifonctions réglable",
+        "Modes de conduite (Eco / Confort / Sport)", "Start & Stop"
+      ],
+      "Multimédia": [
+        "GPS couleur tactile", "Apple CarPlay & Android Auto", "Bluetooth",
+        "Radio USB", "Info trafic", "Lecture des panneaux et des SMS"
+      ],
+      "Sécurité & aides à la conduite": [
+        "Caméra avant + arrière", "Radar de stationnement (Park Assist)",
+        "Aide au freinage d'urgence", "Aide au démarrage en pente", "ABS / ESP",
+        "Limiteur de vitesse", "Contrôle de pression des pneus", "Fixations ISOFIX", "Airbags"
+      ],
+      "Extérieur": [
+        "Jantes aluminium 18 pouces", "Phares à LED + feux de jour LED",
+        "Phares directionnels en virage", "Clignotants dynamiques arrière",
+        "Allumage automatique des feux", "Rétroviseurs électriques rabattables",
+        "Peinture métallisée noire"
+      ]
+    },
     photos: ["https://img.leboncoin.fr/api/v1/lbcpb1/images/b7/16/02/b71602be8fa2faed478c3b8dfe011aa62c9f104e.jpg?rule=ad-large"],
     annonce: "https://www.leboncoin.fr/ad/voitures/3230789451", site: "Leboncoin", vendu: false
   },
@@ -805,6 +840,29 @@ const CARS = [
   const modal = document.getElementById("carModal");
   const modalContent = document.getElementById("modalContent");
 
+  /* Affiche une ligne de spec seulement si la valeur existe. */
+  function specRow(label, value) {
+    return value ? `<div><dt>${label}</dt><dd>${value}</dd></div>` : "";
+  }
+
+  /* Section "Équipements & options", groupée par catégorie.
+     car.equipements = { "Confort": [...], "Sécurité": [...], ... } */
+  function equipSection(equip) {
+    if (!equip || typeof equip !== "object") return "";
+    const cats = Object.keys(equip).filter((c) => Array.isArray(equip[c]) && equip[c].length);
+    if (!cats.length) return "";
+    const groups = cats.map((cat) => `
+      <div class="equip-group">
+        <h4>${cat}</h4>
+        <ul>${equip[cat].map((item) => `<li>${item}</li>`).join("")}</ul>
+      </div>`).join("");
+    return `
+      <div class="modal-equip">
+        <h3>Équipements &amp; options</h3>
+        <div class="equip-groups">${groups}</div>
+      </div>`;
+  }
+
   function openModal(car) {
     const annonceBtn = car.annonce && !car.vendu
       ? `<a href="${car.annonce}" class="btn btn-lbc btn-block" target="_blank" rel="noopener">Voir l'annonce sur ${car.site} ↗</a>`
@@ -826,7 +884,14 @@ const CARS = [
           <div><dt>Boîte</dt><dd>${car.boite}</dd></div>
           <div><dt>Puissance</dt><dd>${car.puissance}</dd></div>
           <div><dt>Places</dt><dd>${car.places}</dd></div>
+          ${specRow("Portes", car.portes)}
+          ${specRow("Finition", car.finition)}
+          ${specRow("Sellerie", car.sellerie)}
+          ${specRow("1re mise en circulation", car.mec)}
+          ${specRow("État", car.etat)}
         </dl>
+        ${car.historique ? `<p class="modal-histo">✅ ${car.historique.join(" • ")}</p>` : ""}
+        ${equipSection(car.equipements)}
         ${cta}
       </div>`;
     modal.hidden = false;
