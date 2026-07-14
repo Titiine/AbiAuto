@@ -670,7 +670,7 @@ a { color: inherit; text-decoration: none; }
       </div>
       <p class="footer-copy">© <span id="year"></span> AbiAuto. Tous droits réservés.</p>
     </div>
-    <p class="footer-version">AbiAuto v1.0.3 (mise à jour du 14/07/2026 à 17h41)</p>
+    <p class="footer-version">AbiAuto v1.0.4 (mise à jour du 14/07/2026 à 17h44)</p>
   </footer>
 
   <!-- ============ MODALE FICHE VÉHICULE ============ -->
@@ -708,10 +708,32 @@ const BOOKING_URL = "";
 // Leboncoin dans le champ "annonce".
 const CARS = [
   {
-    id: 1, marque: "Peugeot", modele: "208", annee: 2019,
-    prix: 9990, km: 85000, carburant: "Essence", boite: "Manuelle",
-    puissance: "82 ch", places: 5, couleur: "#8e44ad",
-    desc: "Citadine fiable et économique, entretenue et prête à rouler. Contrôle technique à jour, véhicule en parfait état.",
+    id: 1, marque: "Peugeot", modele: "208", annee: 2018,
+    prix: 6990, km: 98000, carburant: "Essence", boite: "Automatique",
+    puissance: "82 ch", places: 5, portes: 5, couleur: "#2f5fa8",
+    sellerie: "Tissu", mec: "11/2017", etat: "Excellent état, proche du neuf",
+    critair: "1", ct: "Valide (jusqu'en 2028)",
+    historique: ["Ex-administration française", "Non fumeur", "Factures disponibles", "Contrôle technique valide"],
+    desc: "Citadine essence à boîte automatique, Crit'Air 1 : très économique et idéale pour Paris comme pour un premier véhicule. Ancien véhicule d'administration française, entretenu régulièrement chez Peugeot, non fumeur. Confortable et prête à rouler.",
+    equipements: {
+      "Confort": [
+        "Climatisation", "Volant cuir multifonctions réglable", "Accoudoir central avant",
+        "Sièges avant réglables en hauteur", "Banquette arrière rabattable",
+        "Ordinateur de bord", "Aide au démarrage en côte"
+      ],
+      "Multimédia": [
+        "Écran tactile", "Apple CarPlay", "GPS", "Bluetooth sans fil", "Prise 12V"
+      ],
+      "Sécurité & aides à la conduite": [
+        "Régulateur / limiteur de vitesse", "Radar de recul arrière", "Aide au freinage d'urgence",
+        "ABS / ESP", "Airbags conducteur, passager et latéraux avant", "Détecteur de sous-gonflage",
+        "Verrouillage automatique des portes en roulant", "Verrouillage centralisé à distance"
+      ],
+      "Extérieur": [
+        "Feux de jour à LED + allumage automatique", "Essuie-glaces automatiques",
+        "Répétiteurs de clignotants dans les rétroviseurs", "Vitres arrière électriques"
+      ]
+    },
     photos: ["https://img.leboncoin.fr/api/v1/lbcpb1/images/72/ee/d7/72eed7042b3c9452bdb647176b48ae578a37c2b9.jpg?rule=ad-large"],
     annonce: "https://www.leboncoin.fr/ad/voitures/3225462778", site: "Leboncoin", vendu: false
   },
@@ -887,6 +909,8 @@ const CARS = [
           ${specRow("Portes", car.portes)}
           ${specRow("Finition", car.finition)}
           ${specRow("Sellerie", car.sellerie)}
+          ${specRow("Crit'Air", car.critair)}
+          ${specRow("Contrôle technique", car.ct)}
           ${specRow("1re mise en circulation", car.mec)}
           ${specRow("État", car.etat)}
         </dl>
