@@ -4,11 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AbiAuto | Conseiller automobile en Essonne (Sud de Paris)</title>
-  <meta name="description" content="AbiAuto, conseiller automobile expérimenté basé en Essonne, au Sud de Paris. Voitures neuves et d'occasion au meilleur prix, en partenariat avec des professionnels de l'automobile." />
+  <meta name="description" content="AbiAuto, conseiller automobile en Essonne, au Sud de Paris. Voitures d'occasion sélectionnées au meilleur prix : essai sur route, kilométrage certifié, achetez et roulez le jour même." />
+  <meta name="keywords" content="voiture occasion Essonne, voiture occasion sud de Paris, conseiller automobile Essonne, achat voiture 91, auto occasion 91" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="AbiAuto" />
+  <link rel="canonical" href="https://titiine.github.io/AbiAuto/" />
+  <!-- Open Graph (partage Facebook, WhatsApp…) -->
+  <meta property="og:site_name" content="AbiAuto" />
   <meta property="og:title" content="AbiAuto | Conseiller automobile en Essonne" />
-  <meta property="og:description" content="Voitures neuves et d'occasion au meilleur prix. Essai sur route, kilométrage certifié, achetez et roulez le jour même." />
+  <meta property="og:description" content="Voitures d'occasion au meilleur prix. Essai sur route, kilométrage certifié, achetez et roulez le jour même." />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:url" content="https://titiine.github.io/AbiAuto/" />
+  <meta property="og:image" content="https://titiine.github.io/AbiAuto/assets/modus-1.webp" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="AbiAuto | Conseiller automobile en Essonne" />
+  <meta name="twitter:description" content="Voitures d'occasion au meilleur prix, en Essonne au Sud de Paris." />
+  <meta name="twitter:image" content="https://titiine.github.io/AbiAuto/assets/modus-1.webp" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%97%3C/text%3E%3C/svg%3E" />
+  <!-- Données structurées : le site (aide Google à comprendre le contenu) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "AbiAuto",
+    "url": "https://titiine.github.io/AbiAuto/",
+    "inLanguage": "fr-FR",
+    "description": "Conseiller automobile en Essonne, au Sud de Paris. Voitures d'occasion sélectionnées au meilleur prix.",
+    "areaServed": "Essonne (91), Sud de Paris"
+  }
+  </script>
   <style>
 /* ================= AbiAuto : styles ================= */
 :root {
@@ -675,7 +701,7 @@ a { color: inherit; text-decoration: none; }
       </div>
       <p class="footer-copy">© <span id="year"></span> AbiAuto. Tous droits réservés.</p>
     </div>
-    <p class="footer-version">AbiAuto v1.0.10 (mise à jour du 14/07/2026 à 18h32)</p>
+    <p class="footer-version">AbiAuto v1.1.0 (mise à jour du 14/07/2026 à 19h05)</p>
   </footer>
 
   <!-- ============ MODALE FICHE VÉHICULE ============ -->
@@ -1013,6 +1039,42 @@ const CARS = [
   document.getElementById("year").textContent = new Date().getFullYear();
   // Les véhicules vendus restent dans les données mais ne sont pas affichés.
   render(CARS.filter((c) => !c.vendu));
+
+  /* --- Données structurées des véhicules (SEO) ---
+     Générées à partir de CARS (source unique) : Google peut afficher
+     marque, prix, année et photo directement dans les résultats. */
+  (function injectVehicleSchema() {
+    const BASE = "https://titiine.github.io/AbiAuto/";
+    const absolute = (u) => (!u ? undefined : /^https?:\/\//.test(u) ? u : BASE + u);
+    const items = CARS.filter((c) => !c.vendu).map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Car",
+        name: `${c.marque} ${c.modele}`,
+        brand: { "@type": "Brand", name: c.marque },
+        model: c.modele,
+        vehicleModelDate: String(c.annee),
+        fuelType: c.carburant,
+        vehicleTransmission: c.boite,
+        mileageFromOdometer: { "@type": "QuantitativeValue", value: c.km, unitCode: "KMT" },
+        image: Array.isArray(c.photos) && c.photos.length ? absolute(c.photos[0]) : undefined,
+        url: c.annonce || BASE,
+        offers: {
+          "@type": "Offer",
+          price: c.prix,
+          priceCurrency: "EUR",
+          availability: "https://schema.org/InStock",
+          itemCondition: "https://schema.org/UsedCondition"
+        }
+      }
+    }));
+    const data = { "@context": "https://schema.org", "@type": "ItemList", itemListElement: items };
+    const s = document.createElement("script");
+    s.type = "application/ld+json";
+    s.textContent = JSON.stringify(data);
+    document.head.appendChild(s);
+  })();
 })();
 
 </script>
