@@ -670,7 +670,7 @@ a { color: inherit; text-decoration: none; }
       </div>
       <p class="footer-copy">© <span id="year"></span> AbiAuto. Tous droits réservés.</p>
     </div>
-    <p class="footer-version">AbiAuto v1.0.4 (mise à jour du 14/07/2026 à 17h44)</p>
+    <p class="footer-version">AbiAuto v1.0.5 (mise à jour du 14/07/2026 à 17h54)</p>
   </footer>
 
   <!-- ============ MODALE FICHE VÉHICULE ============ -->
@@ -772,11 +772,15 @@ const CARS = [
     annonce: "https://www.leboncoin.fr/ad/voitures/3230789451", site: "Leboncoin", vendu: false
   },
   {
-    id: 3, marque: "Renault", modele: "Modus", annee: 2008,
-    prix: 4490, km: 120000, carburant: "Essence", boite: "Manuelle",
-    puissance: "75 ch", places: 5, couleur: "#2980b9",
-    desc: "Petit monospace pratique et fiable, idéal premier véhicule ou trajets du quotidien. Entretenu, prêt à rouler.",
-    annonce: "", site: "Leboncoin", vendu: false
+    id: 3, marque: "Renault", modele: "Modus Expression", annee: 2009,
+    prix: 4290, km: 126000, carburant: "Diesel", boite: "Manuelle",
+    puissance: "86 ch", places: 5, portes: 5, couleur: "#8a6d3b",
+    finition: "Expression (1.5 dCi 90)", couleurNom: "Marron clair métallisé",
+    sellerie: "Tissu gris", mec: "06/01/2009", ct: "Requis",
+    provenance: "France", conso: "4,1 L/100 km", co2: "119 g/km",
+    historique: ["Première main", "Provenance France"],
+    desc: "Petit monospace diesel économique (4,1 L/100 km), première main et provenance France. Habitacle modulable et pratique, idéal pour la ville et les trajets du quotidien. Un véhicule sobre et fiable, prêt à rouler.",
+    annonce: "https://www.lacentrale.fr/auto-occasion-annonce-66104128227.html", site: "La Centrale", vendu: false
   }
 ];
 
@@ -908,9 +912,13 @@ const CARS = [
           <div><dt>Places</dt><dd>${car.places}</dd></div>
           ${specRow("Portes", car.portes)}
           ${specRow("Finition", car.finition)}
+          ${specRow("Couleur", car.couleurNom)}
           ${specRow("Sellerie", car.sellerie)}
           ${specRow("Crit'Air", car.critair)}
           ${specRow("Contrôle technique", car.ct)}
+          ${specRow("Provenance", car.provenance)}
+          ${specRow("Consommation", car.conso)}
+          ${specRow("CO₂", car.co2)}
           ${specRow("1re mise en circulation", car.mec)}
           ${specRow("État", car.etat)}
         </dl>
